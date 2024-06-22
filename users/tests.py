@@ -84,11 +84,11 @@ class RegistrationTestCase(TestCase):
 
 
 class LoginTestCase(TestCase):
+    def setUp(self):
+        self.db_user = User.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov')
+        self.db_user.set_password('123456')
+        self.db_user.save()
     def test_user_login(self):
-        db_user = User.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov')
-        db_user.set_password('123456')
-        db_user.save()
-
         self.client.post(
             reverse("users:login"),
             data={
@@ -99,11 +99,13 @@ class LoginTestCase(TestCase):
         user = get_user(self.client)
         self.assertTrue(user.is_authenticated)
 
-    def test_wrong_credentials(self):
-        db_user = User.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov')
-        db_user.set_password('123456')
-        db_user.save()
+    def test_user_logout(self):
+        self.client.login(username='ismoiljon1', password='123456')
+        self.client.get(reverse('users:logout'))
+        user = get_user(self.client)
+        self.assertFalse(user.is_authenticated)
 
+    def test_wrong_credentials(self):
         self.client.post(
             reverse("users:login"),
             data={
@@ -123,3 +125,24 @@ class LoginTestCase(TestCase):
         )
         user = get_user(self.client)
         self.assertFalse(user.is_authenticated)
+
+class UserLoginTestCase(TestCase):
+    def test_user_login_required(self):
+        response = self.client.get(
+            reverse("users:profile"),
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('users:login') + "?next=/users/profile/")
+
+    def test_profile_details(self):
+        user = User.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov', email='ismoil@gmail.com')
+        user.set_password('123456')
+        user.save()
+
+        self.client.login(username='ismoiljon1', password='123456')
+        response = self.client.get(reverse('users:profile'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, user.username)
+        self.assertContains(response, user.email)
+        self.assertContains(response, user.first_name)
+        self.assertContains(response, user.last_name)
