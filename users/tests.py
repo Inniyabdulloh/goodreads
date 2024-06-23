@@ -126,7 +126,7 @@ class LoginTestCase(TestCase):
         user = get_user(self.client)
         self.assertFalse(user.is_authenticated)
 
-class UserLoginTestCase(TestCase):
+class ProfileTestCase(TestCase):
     def test_user_login_required(self):
         response = self.client.get(
             reverse("users:profile"),
@@ -146,3 +146,26 @@ class UserLoginTestCase(TestCase):
         self.assertContains(response, user.email)
         self.assertContains(response, user.first_name)
         self.assertContains(response, user.last_name)
+
+    def test_update_user_profile(self):
+        user = User.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov',
+                                        email='ismoil@gmail.com')
+        user.set_password('123456')
+        user.save()
+
+        self.client.login(username='ismoiljon1', password='123456')
+
+        response = self.client.post(
+            reverse('users:profile-edit'),
+            data={
+                'username': 'ismoiljon1',
+                'first_name': 'Ismoilbek',
+                'last_name': 'Abdulloh',
+                'email': 'ismoil@gmail.com',
+            }
+        )
+        user.refresh_from_db()
+        self.assertEqual(user.first_name, 'Ismoilbek')
+        self.assertEqual(user.last_name, 'Abdulloh')
+        self.assertEqual(user.email, 'ismoil@gmail.com')
+        self.assertEqual(response.url, reverse('users:profile'))
