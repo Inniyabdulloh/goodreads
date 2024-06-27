@@ -48,7 +48,24 @@ class UserLoginView(View):
 
 class UserProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, 'users/profile.html',{'user':request.user})
+        user_update_form = UserUpdateForm(instance=request.user)
+        context = {
+            'form': user_update_form,
+            'user': request.user
+        }
+
+        return render(request, 'users/profile.html',context)
+
+    def post(self, request):
+        user_update_form = UserUpdateForm(request.POST,
+                    instance=request.user,
+                    files=request.FILES)
+        if user_update_form.is_valid():
+            user_update_form.save()
+            messages.success(request, 'Your profile has been updated.')
+            return redirect('users:profile')
+
+        return render(request, 'users/profile-edit.html', {'form': user_update_form})
 
 
 class UserLogoutView(LoginRequiredMixin, View):
@@ -57,16 +74,3 @@ class UserLogoutView(LoginRequiredMixin, View):
         messages.info(request, 'You have been logged out.')
         return redirect('landing_page')
 
-class ProfileUpdateView(LoginRequiredMixin, View):
-    def get(self, request):
-        user_update_form = UserUpdateForm(instance=request.user)
-        return render(request, 'users/profile-edit.html', {'form': user_update_form})
-
-    def post(self, request):
-        user_update_form = UserUpdateForm(request.POST, instance=request.user)
-        if user_update_form.is_valid():
-            user_update_form.save()
-            messages.success(request, 'Your profile has been updated.')
-            return redirect('users:profile')
-
-        return render(request, 'users/profile-edit.html', {'form': user_update_form})

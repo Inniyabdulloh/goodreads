@@ -1,11 +1,47 @@
 {% extends 'base.html '%}
 {% block title %}Profile Page{% endblock%}
+{% load crispy_forms_tags %}
 
 {% block content %}
     <h1>Profile Page</h1>
-    <p>Username: {{user.username}}</p>
-    <p>First name:{{user.first_name}}</p>
-    <p>Last name: {{user.last_name}}</p>
-    <p>Email: {{user.email}}</p>
-    <a href="{% url 'users:profile-edit'%}">Edit Profile</a>
+
+
+<div class="container">
+		<div class="main-body">
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="card">
+						<div class="card-body">
+							<div class="d-flex flex-column align-items-center text-center">
+								<img src="{{ user.profile_picture.url }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+								<div class="mt-3">
+									<h4>{{user.first_name}} {{user.last_name}}</h4>
+									<p class="text-secondary mb-1">{{user.username}}</p>
+									<p class="text-muted font-size-sm">{{user.email}}</p>
+									<p>Joined {{ user.date_joined | date:"M d, Y"}}</p>
+									<button class="btn btn-primary">Follow</button>
+									<button class="btn btn-outline-primary">Message</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				{% if request.user.id == user.id %}
+				<div class="col-4">
+					<div class="card">
+						<div class="card-body">
+							<form method="post" action="{% url 'users:profile'%}">
+								{% csrf_token %}
+								{{ form | crispy }}
+								<button type="submit" class="btn btn-outline-primary">Save Changes</button>
+							</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {% endblock %}

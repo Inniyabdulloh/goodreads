@@ -1,0 +1,51 @@
+{% extends 'base.html'%}
+
+
+{% block content %}
+
+{% for review in page_obj %}
+<div id="container">
+
+	<div class="product-details">
+		<div class="review-profile">
+			<img class="small-profile-pic me-2" src="{{ review.user.profile_picture.url}}" alt="">
+
+			<div>
+			<h3 class="me-2">{{ review.user.username }}</h3>
+
+					<i class="fa-solid fa-star gold "></i>
+					<i class="fa-solid fa-star {% if review.stars_given > 1 %}gold {% endif %}"></i>
+					<i class="fa-solid fa-star {% if review.stars_given > 2 %}gold {% endif %}"></i>
+					<i class="fa-solid fa-star {% if review.stars_given > 3 %}gold {% endif %}"></i>
+					<i class="fa-solid fa-star {% if review.stars_given > 4 %}gold {% endif %}"></i>
+			</div>
+		</div>
+		<hr>
+			<p class="information ">
+				{{ review.comment | truncatechars:150 }}
+			</p>
+
+
+
+	</div>
+
+	<div class="product-image">
+
+		<img class="book-img" src="{{ review.book.cover_pic.url }}" alt="">
+
+
+		<div class="info">
+			<h2> Description</h2>
+			<ul>
+				<li><strong><a href="{% url  'books:detail' review.book.id%}">{{ review.book.title}}</a></li>
+				<li><strong>Shade : </strong>Olive green</li>
+				<li><strong>Decoration: </strong>balls and bells</li>
+				<li><strong>Material: </strong>Eco-Friendly</li>
+
+			</ul>
+		</div>
+	</div>
+</div>
+<hr class="mt-1">
+{% endfor %}
+{% endblock %}

@@ -1,13 +1,85 @@
 {% extends 'base.html '%}
+{% load crispy_forms_tags %}
 {% block title %}Book detail{% endblock%}
 {% block content %}
-<h3>
-    <p>
-        {{ book.title }}
-    </p>
 
-    <p>
-        {{ book.description }}
-    </p>
-</h3>
+
+    <div class="row">
+        <div class="col-3">
+            <img class="big-cover-pic mt-2" src="{{ book.cover_pic.url }}" alt="">
+        </div>
+        <div class="col">
+            <h3>
+                {{ book.title }}
+            </h3>
+            <p class="book-description">
+                {{ book.description }}
+            </p>
+        </div>
+
+
+        <hr>
+    <div class="row mb-4">
+        <div class="col-6">
+           <form method="post" action="{% url 'books:review' book.id %}">
+                <div class="row mb-0">
+                    <div class="stars  ps-3 mb-2 chap">
+                        <input type="radio" id="five" name="rate" value="5">
+                        <label for="five">
+                            <i class="fa-solid fa-star"></i>
+                        </label>
+                        <input type="radio" id="four" name="rate" value="4">
+                        <label for="four">
+                            <i class="fa-solid fa-star "></i>
+                        </label>
+                        <input type="radio" id="three" name="rate" value="3">
+                        <label for="three">
+                            <i class="fa-solid fa-star"></i>
+                        </label>
+                        <input type="radio" id="two" name="rate" value="2">
+                        <label for="two">
+                            <i class="fa-solid fa-star"></i>
+                        </label>
+                        <input type="radio" id="one" name="rate" value="1">
+                        <label for="one">
+                            <i class="fa-solid fa-star"></i>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    {{ review_form | crispy }}
+                    {% csrf_token %}
+                    <button class="btn btn-success">Add review</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    </div>
+
+    {% if book.reviews.exists %}
+
+    <h4 class="ms-5">Reviews</h4> <hr>
+
+    {% for review in book.reviews.all %}
+        <div class="row ms-3 mb-3 comment-div">
+            <div class="col-1 me-5">
+                <img class="small-profile-pic mb-2" src="{{ review.user.profile_picture.url }}" alt="profile pic">
+                <h4 class="ms-2">{{ review.user.username }}</h4>
+            </div>
+            <div class="col-7 ms-5">
+                <i class="fa-solid fa-star gold"></i>
+                <i class="fa-solid fa-star {% if review.stars_given > 1 %}gold {% endif %}"></i>
+                <i class="fa-solid fa-star {% if review.stars_given > 2 %}gold {% endif %}"></i>
+                <i class="fa-solid fa-star {% if review.stars_given > 3 %}gold {% endif %}"></i>
+                <i class="fa-solid fa-star {% if review.stars_given > 4 %}gold {% endif %}"></i>
+
+                <span class="fw-lighter">{{ review.created_at }}</span>
+                <p class="mt-2 font-monospace comment-text">{{ review.comment }}</p>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+    {% endif %}
 {% endblock %}

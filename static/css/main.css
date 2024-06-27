@@ -1,0 +1,91 @@
+.profile-pic{
+    width: 200px;
+    height: 200px;
+    border-radius: 50px;
+}
+
+.small-profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+}
+
+.cover-pic {
+    width: 230px;
+    height: 300px;
+}
+
+.big-cover-pic {
+    width: 270px;
+    height: 370px;
+}
+
+#id_username_helptext {
+    display: none !important;
+}
+.cover-pic {
+    width: 220px;
+    height: 300px;
+}
+
+.book-description {
+    overflow: auto;
+    height: 350px;
+    width: 500px;
+}
+
+.book-title {
+    text-decoration: none;
+}
+/* stars rate */
+.stars label{
+    float: right;
+	font-size: 50px;
+}
+
+
+.stars input{
+	display: none;
+}
+
+.gold {
+    color:gold;
+}
+
+.stars input:hover ~ label {
+    color: gold;
+}
+.stars input:checked ~ label{
+	color: gold;
+}
+
+.review-input {
+    height: 250px;
+}
+.chap {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: left;
+}
+#div_id_comment label {
+    display: none; !important;
+}
+/* stars rate end */
+
+/* comments */
+
+.comment-div {
+    height: auto;
+    max-height: 200px;
+}
+
+.comment-text {
+    height: 170px;
+    overflow: auto;
+}
+
+.navbar {
+    position: fixed; !important;
+    top: 0; !important;
+    background-color: #eeeeee; !important;
+}
