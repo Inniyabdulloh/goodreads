@@ -87,9 +87,24 @@ class ReviewTestCase(TestCase):
             'rate': 5,
             'comment': 'Awesome comment',
         })
-        # print(response.url)
+
         review.refresh_from_db()
+
+        self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('books:detail', kwargs={'id':self.book.id}))
         self.assertEqual(review.stars_given, 5)
         self.assertEqual(review.comment, 'Awesome comment')
+
+    def test_delete_review(self):
+        review = self.book.reviews.all()[0]
+
+        response = self.client.get(reverse('books:delete-review',
+                        kwargs={'book_id': self.book.id,
+                                'review_id': review.id}))
+
+
+        review = self.book.reviews.all()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('books:detail', kwargs={'id':self.book.id}))
+        self.assertEqual(review.exists(), False)
 
