@@ -37,15 +37,34 @@
 		<div class="info">
 			<h2> Description</h2>
 			<ul>
-				<li><strong><a href="{% url  'books:detail' review.book.id%}">{{ review.book.title}}</a></li>
-				<li><strong>Shade : </strong>Olive green</li>
-				<li><strong>Decoration: </strong>balls and bells</li>
-				<li><strong>Material: </strong>Eco-Friendly</li>
-
+				<li><a href="{% url  'books:detail' review.book.id%}">{{ review.book.title}}</a></li>
+				<li>{{ review.book.book_author.all.first }}</li>
 			</ul>
 		</div>
 	</div>
 </div>
 <hr class="mt-1">
 {% endfor %}
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item">
+      {% if page_obj.has_previous %}
+      <a class="page-link" href="{% url 'home_page'%}?page={{page_obj.previous_page_number}}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+      {% endif %}
+    </li>
+    <li class="page-item"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+    <li class="page-item">
+      {% if page_obj.has_next %}
+      <a class="page-link" href="{% url 'home_page'%}?page={{page_obj.next_page_number}}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+      {% endif %}
+    </li>
+  </ul>
+</nav>
+
+
 {% endblock %}

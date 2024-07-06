@@ -84,8 +84,16 @@
     overflow: auto;
 }
 
-.navbar {
-    position: fixed; !important;
-    top: 0; !important;
-    background-color: #eeeeee; !important;
+/*.navbar {*/
+/*    position: fixed; !important;*/
+/*    top: 0; !important;*/
+/*    background-color: #eeeeee; !important;*/
+/*}*/
+
+#detail-page {
+    margin-top: 100px; !important;
+}
+
+.base {
+    margin-top: 80px;
 }

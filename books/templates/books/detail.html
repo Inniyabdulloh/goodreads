@@ -4,7 +4,7 @@
 {% block content %}
 
 
-    <div class="row">
+    <div id="detail-page" class="row">
         <div class="col-3">
             <img class="big-cover-pic mt-2" src="{{ book.cover_pic.url }}" alt="">
         </div>
@@ -12,6 +12,16 @@
             <h3>
                 {{ book.title }}
             </h3>
+            <span class="fst-italic">
+                Authered by
+                {% for author in book_author %}
+                    {% if forloop.last %}
+                        {{ author }}
+                    {% else %}
+                        {{ author }},
+                    {% endif %}
+                {% endfor %}
+            </span>
             <p class="book-description">
                 {{ book.description }}
             </p>
@@ -76,6 +86,10 @@
                 <i class="fa-solid fa-star {% if review.stars_given > 4 %}gold {% endif %}"></i>
 
                 <span class="fw-lighter">{{ review.created_at }}</span>
+                {% if request.user.id == review.user.id %}
+                <a href="{% url 'books:edit-review' book.id review.id %}"><i class="bi bi-pencil-square"></i></a>
+                <a href="{% url 'books:delete-review' book.id review.id %}"><i class="bi bi-trash"></i></a>
+                {% endif %}
                 <p class="mt-2 font-monospace comment-text">{{ review.comment }}</p>
             </div>
         </div>

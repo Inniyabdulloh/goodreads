@@ -25,9 +25,13 @@ class BooksView(View):
 class BookDetailView(View):
     def get(self, request, id):
         book = Book.objects.get(id=id)
+        book_author = book.book_author.all()
         review_form = BookReviewForm()
-
-        return render(request, "books/detail.html", {"book": book, "review_form": review_form})
+        context = {
+            "book": book, "review_form": review_form,
+            "book_author": book_author
+        }
+        return render(request, "books/detail.html", context)
 
 
 class AddReviewView(LoginRequiredMixin, View):
@@ -47,3 +51,37 @@ class AddReviewView(LoginRequiredMixin, View):
             return redirect(reverse("books:detail", kwargs={"id": book.id}))
 
         return render(request, "books/detail.html", {"book": book, "review_form": review_form})
+
+
+class EditReviewView(LoginRequiredMixin, View):
+    def get(self, request, book_id, review_id):
+        book = Book.objects.get(id=book_id)
+        review = book.reviews.get(pk=review_id)
+        if request.user != review.user:
+            return redirect(reverse("books:detail", kwargs={"id": book_id}))
+        review_form = BookReviewForm(instance=review)
+        return render(request, 'books/edit-review.html', {'review_form': review_form})
+
+    def post(self, request, book_id, review_id):
+        book = Book.objects.get(id=book_id)
+        review = book.reviews.get(id=review_id)
+        # if request.user == review.user:
+        stars = request.POST.get('rate')
+        review_form = BookReviewForm(data=request.POST)
+
+        if review_form.is_valid():
+            review.stars_given = stars
+            review.comment = review_form.cleaned_data['comment']
+            review.save()
+            return redirect(reverse("books:detail", kwargs={"id": book_id}))
+
+        return render(request, "books/edit-review.html", {"review_form": review_form})
+
+
+class DeleteReviewView(LoginRequiredMixin, View):
+    def get(self, request, book_id, review_id):
+        book = Book.objects.get(id=book_id)
+        review = book.reviews.get(pk=review_id)
+        if request.user != review.user:
+            return redirect(reverse("books:detail", kwargs={"id": book_id}))
+        return render(request, 'books/delete-review.html', {'review':review.comment})

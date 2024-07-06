@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # my apps
     'books',
     'users',
+    'api',
     
     #installed apps
     "crispy_forms",
@@ -134,6 +135,15 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sinovkanal0@gmail.com'
+EMAIL_HOST_PASSWORD = 'fcrd vvbg otsq bdue'
+EMAIL_USE_SSL = False
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media-files'
 # Default primary key field type
