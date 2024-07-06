@@ -57,25 +57,39 @@ class BooksTestCase(TestCase):
 
 
 class ReviewTestCase(TestCase):
-      def test_add_review(self):
-          book = Book.objects.create(title='Test Book1', description='Test description1', isbn='12365655')
-          user = CustomUser.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov',
-                                                email='ismoil@gmail.com')
-          user.set_password('123456')
-          user.save()
+    def setUp(self):
+        self.book = Book.objects.create(title='Test Book1', description='Test description1', isbn='12365655')
+        self.user = CustomUser.objects.create_user(username='ismoiljon1', first_name='Ismoil', last_name='Mamirov',
+                                              email='ismoil@gmail.com')
+        self.user.set_password('123456')
+        self.user.save()
 
-          self.client.login(username='ismoiljon1', password='123456')
+        self.client.login(username='ismoiljon1', password='123456')
 
-          self.client.post(reverse('books:review', kwargs={'id': book.id}),data={
-              'rate':3,
-              'comment':'Test comment',
-          })
+        self.client.post(reverse('books:review', kwargs={'id': self.book.id}), data={
+            'rate': 3,
+            'comment': 'Test comment',
+        })
 
-          book_reviews = book.reviews.all()
+    def test_add_review(self):
+        book_reviews = self.book.reviews.all()
 
-          self.assertEqual(book_reviews.count(), 1)
-          self.assertEqual(book_reviews[0].stars_given, 3)
-          self.assertEqual(book_reviews[0].comment, 'Test comment')
-          self.assertEqual(book_reviews[0].book, book)
-          self.assertEqual(book_reviews[0].user, user)
+        self.assertEqual(book_reviews.count(), 1)
+        self.assertEqual(book_reviews[0].stars_given, 3)
+        self.assertEqual(book_reviews[0].comment, 'Test comment')
+        self.assertEqual(book_reviews[0].book, self.book)
+        self.assertEqual(book_reviews[0].user, self.user)
+
+    def test_edit_review(self):
+        review = self.book.reviews.all()[0]
+        response = self.client.post(reverse('books:edit-review',
+                        kwargs={'book_id': self.book.id, 'review_id': review.id}), data={
+            'rate': 5,
+            'comment': 'Awesome comment',
+        })
+        # print(response.url)
+        review.refresh_from_db()
+        self.assertEqual(response.url, reverse('books:detail', kwargs={'id':self.book.id}))
+        self.assertEqual(review.stars_given, 5)
+        self.assertEqual(review.comment, 'Awesome comment')
 
