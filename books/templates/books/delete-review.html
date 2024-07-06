@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-    {{ review }}
-    <a href="#"></a>
-    <a href=""></a>
+    <h3>Are you sure delete this comment </h3>
+<hr>
+    {{ review.comment }}
+<hr>
+    <div>
+        <a class="btn btn-primary" href="{% url 'books:detail' book.id %}">Cancel</a>
+    <a class="btn btn-danger" href="{% url 'books:delete-review' book.id review.id %}">Delete</a>
+    </div>
+
 {% endblock %}
