@@ -1,5 +1,5 @@
 from django.utils import timezone
-
+from functools import  reduce
 from users.models import CustomUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -13,6 +13,16 @@ class Book(models.Model):
     cover_pic = models.ImageField(default='default-book.png')
     def __str__(self):
         return self.title
+
+    @property
+    def authors(self):
+        return BookAuthor.objects.filter(book=self)
+    @property
+    def starts(self):
+        pass
+        stars = Review.objects.filter(book=self)
+        number = reduce(lambda x: x.stars_given, stars, 0)
+        return number / stars.count()
 
 class Author(models.Model):
     first_name = models.CharField(max_length=255)

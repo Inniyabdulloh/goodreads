@@ -7,11 +7,55 @@
 
 <div class="row mb-3">
     <div class="col-4">
-        <form class="d-flex" method="get">
-            <input class="form-control me-2" type="text" placeholder="Search" name="q" value="{{ search_query}}">
+        <form class="d-flex" id="searchForm" action="{% url 'books:list' %}" method="get">
+        <input type="text" id="searchInput" name="q" placeholder="Search" value="{{search_query}}">
+        <button class="btn btn-danger" type="button" id="voiceButton"><i class="bi bi-mic"></i></button>
+        <button class="btn btn-success" type="submit">Search</button>
+    </form>
 
-            <button class="btn btn-success">Search</button>
-        </form>
+<script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const voiceButton = document.getElementById('voiceButton');
+
+        voiceButton.addEventListener('click', () => {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-EN';
+
+            recognition.onstart = () => {
+                console.log('Ovoz yozish boshlandi');
+            };
+
+            recognition.onend = () => {
+                console.log('Ovoz yozish tugadi');
+                searchForm.submit(); // Ovoz yozish tugagach, formani avtomatik jo'natish
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Xatolik:', event.error);
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                searchInput.value = transcript;
+            };
+
+            recognition.start();
+
+            // 3 soniyadan keyin ovozni yozishni to'xtatish
+            setTimeout(() => {
+                recognition.stop();
+            }, 3000);
+        });
+    </script>
+
+
+<!--        <form class="d-flex" method="get" action="{% url 'books:list'%}">-->
+<!--            {% csrf_token %}-->
+<!--            <input name="q" type="text" id="searchInput" placeholder="Search">-->
+<!--            <button id="searchButton">Qidirish</button>-->
+<!--        </form>-->
+<!--        <button class="btn btn-danger" id="voiceButton"><i class="bi bi-mic-fill"></i></button>-->
     </div>
 </div>
 
@@ -55,3 +99,5 @@
         {% endif %}
 
 {% endblock %}
+
+

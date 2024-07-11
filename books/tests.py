@@ -4,7 +4,6 @@ from books.models import Book
 from users.models import CustomUser
 
 
-# Create your tests here.
 
 class BooksTestCase(TestCase):
     def test_books_not_found(self):

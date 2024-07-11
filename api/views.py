@@ -1,9 +1,17 @@
 from django.http import JsonResponse
 from django.views import View
 from books.models import Book
-
+from .serializers import BookSerializer
+from rest_framework.generics import ListAPIView, RetrieveAPIView, RetrieveUpdateAPIView, CreateAPIView, DestroyAPIView
 
 # Create your views here.
+
+
+class BookListAPIView(ListAPIView):
+    serializer_class = BookSerializer
+    queryset = Book.objects.all()
+
+
 
 class BookApiView(View):
     def get(self, request, id):

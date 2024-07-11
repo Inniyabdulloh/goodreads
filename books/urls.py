@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     BooksView, BookDetailView, AddReviewView,
-    EditReviewView, ConfirmDeleteReviewView, DeleteReviewView
+    EditReviewView, ConfirmDeleteReviewView, DeleteReviewView,
+
 )
 
 app_name = 'books'

@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.http import JsonResponse
 from django.views import View
 from books.models import Book, Review
 from .forms import BookReviewForm
@@ -12,6 +13,7 @@ class BooksView(View):
     def get(self, request):
         books = Book.objects.all().order_by('id')
         search_query = request.GET.get('q', '')
+        print(search_query)
         if search_query:
             books = books.filter(title__icontains=search_query)
         page_size = request.GET.get('page_size', 2)
@@ -94,3 +96,6 @@ class DeleteReviewView(LoginRequiredMixin, View):
         review.delete()
         messages.success(request, "Review deleted successfully")
         return redirect(reverse("books:detail", kwargs={"id": book_id}))
+
+
+

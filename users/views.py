@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect
 from django.views import View
 from users.forms import UserCreateForm, UserUpdateForm
 
-# Create your views here.
 
 class UserRegistrationView(View):
     def get(self, request):
