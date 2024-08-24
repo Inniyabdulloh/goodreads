@@ -6,6 +6,8 @@ from .views import (
 )
 
 app_name = 'books'
+
+
 urlpatterns = [
     path('', BooksView.as_view(), name='list'),
     path('<int:id>/', BookDetailView.as_view(), name='detail'),
